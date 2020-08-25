@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Results from './Results';
-import classes from '../css/weather.css';
+import classes from '../css/weather.module.css';
 import axios from 'axios';
 
 const Weather = () => {
@@ -11,7 +11,7 @@ const Weather = () => {
     let [error, setError] = useState(false);
     let [loading, setLoading] = useState(false);
 
-    const API_KEY = 'd67d06df24c92f2c394ddc864f842b94';
+    const API_KEY = 'YOUR OPEN WEATHER MAP API KEY';
 
     function getWeather(e) {
         e.preventDefault();
@@ -47,7 +47,7 @@ const Weather = () => {
     }
     return (
         <div>
-            <h2>Find Current Weather Conditions</h2>
+            <h2>Current Weather Conditions by City</h2>
             <form onSubmit={getWeather}>
                 <input
                     type="text"
@@ -85,6 +85,7 @@ const Weather = () => {
                error={error}
                loading={loading}
                />
+            <hr></hr>
         </div>
     )
 }
