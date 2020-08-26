@@ -8,6 +8,8 @@ import axios from 'axios';
 const SearchByCity = () => {
 
     let [city, setCity] = useState('');
+    let [stateUS, setStateUS] = useState('');
+    let [country, setCountry] = useState('');
     let [unit, setUnit] = useState('imperial');
     let [responseObj, setResponseObj] = useState([]);
     let [error, setError] = useState(false);
@@ -18,19 +20,28 @@ const SearchByCity = () => {
     function getWeather(e) {
         e.preventDefault();
 
-        if (city.length === 0) {
+        if (city.length === 0 || country.length === 0) {
             return setError(true);
         }
-     
+        if (stateUS.length !== 0 && country !== 'us') {
+            return setError(true);
+        }
+        if (stateUS.length === 0 && country === 'us') {
+            return setError(true);
+        }
+
+
         setError(false);
         setResponseObj({});
         
         setLoading(true);
         
         const uriEncodedCity = encodeURIComponent(city);
+        const uriEncodedState = encodeURIComponent(stateUS);
+        const uriEncodedCountry = encodeURIComponent(country);
 
-        axios.get(`http://api.openweathermap.org/data/2.5/weather?units=${unit}&q=${uriEncodedCity}
-                &appid=${API_KEY}`)
+        axios.get(`http://api.openweathermap.org/data/2.5/weather?units=${unit}&q=${uriEncodedCity}, ${uriEncodedState}, 
+                ${uriEncodedCountry}&appid=${API_KEY}`)
         .then(response => response.data)
         .then(response => {
             if (response.cod !== 200) {
@@ -51,14 +62,32 @@ const SearchByCity = () => {
         <div>
             <h2>Current Weather Conditions by City</h2>
             <form onSubmit={getWeather}>
+                <span>
                 <input
                     type="text"
-                    placeholder="Enter City"
+                    placeholder="City"
                     maxLength="50"
                     className={classes.textInput}
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     />
+                <input
+                    type="text"
+                    placeholder="State (U.S. only)"
+                    maxLength="50"
+                    className={classes.textInput}
+                    value={stateUS}
+                    onChange={(e) => setStateUS(e.target.value)}
+                    />
+                <input
+                    type="text"
+                    placeholder="Country"
+                    maxLength="50"
+                    className={classes.textInput}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    />
+                </span>
                 <label className={classes.Radio}>
                     <input
                         type="radio"

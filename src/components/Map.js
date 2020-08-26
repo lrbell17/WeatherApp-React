@@ -85,7 +85,6 @@ export class MapContainer extends React.Component {
         height: '70%',
     };
 
-    // this.get();
     return (
       <div>
       <h2>Current Weather Conditions by Location</h2>
