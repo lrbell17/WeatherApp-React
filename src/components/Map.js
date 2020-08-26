@@ -1,28 +1,25 @@
 import React from 'react';
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 import classes from '../css/map.module.css';
+import axios from 'axios';
 
 export class MapContainer extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
-      lat: 37.773972,
-      lng: -122.4194,
       showingInfoWindow: true,
       markers: [],
       activeMarker: {},  
-      message:""
+      responseObj: {},
+      message: ""
     }
 
   }
 
+  // adds markers when user clicks on map
   handleMapClick = (map, maps, e) => {
     const { latLng } = e;
-    const latitude = e.latLng.lat();
-    const longitude = e.latLng.lng();
-
-    this.setState({lat: latitude, lng:longitude});
 
     this.setState(prevState => ({
       markers: [...prevState.markers, latLng]
@@ -31,19 +28,24 @@ export class MapContainer extends React.Component {
 
   }
 
+  // expand info window w/ weather data when you click on marker
   onMarkerClick = (props, marker, e) => {
     
-    const lat = marker.position.lat();
-    const lng = marker.position.lng();
-    const weatherMessage = `The weather for latitude: ${lat}, longitude: ${lng} is: `
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true,
-      message: weatherMessage
-    });
+    const latitude = marker.position.lat();
+    const longitude = marker.position.lng();
+    
+    this.getWeatherByCoords(latitude, longitude).then((response) => {
+      this.setState({
+        selectedPlace: props,
+        activeMarker: marker,
+        showingInfoWindow: true,
+        responseObj: response.data,
+        message: this.getMessage(response.data)
+      });
+    })
   }
 
+  // close info window for marker
   onClose = props => {
     if (this.state.showingInfoWindow) {
       this.setState({
@@ -53,28 +55,49 @@ export class MapContainer extends React.Component {
     }
   }
 
+  
+  // Call OpenWeatherMap API to get weather based on coordinates
+  getWeatherByCoords(lat, lng){
+
+    const API_KEY = 'YOUR OPENWEATHERMAP API KEY';
+
+    return axios.get(`http://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${lat}&lon=${lng}&appid=${API_KEY}`);
+
+  }
+
+
+  // Gets readable message from JSON response
+  getMessage(responseObj){
+  
+      const temp = Math.round(responseObj.main.temp);
+      const description = responseObj.weather[0].description;
+
+      const message = `It is currently ${temp} degrees out with ${description}`;
+
+      return message;
+
+  }
+
   render() {
 
     const mapStyles = {
         width: '70%',
         height: '70%',
-        
     };
 
-    const infoWindowStyle = {
-      color: 'black'
-    }
+    // this.get();
     return (
       <div>
       <h2>Current Weather Conditions by Location</h2>
+  
         <div className={classes.Map}>
             <Map 
                 google={this.props.google}
                 zoom={10}
                 style={mapStyles}
                 initialCenter={{
-                  lat: this.state.lat,
-                  lng: this.state.lng,
+                  lat: 37.773972,
+                  lng: -122.4194,
                 }}         
                 onClick = {this.handleMapClick}
             >
@@ -93,8 +116,8 @@ export class MapContainer extends React.Component {
                 onClose={this.onClose}
               >
                 <div>
-                  <h4 style={infoWindowStyle}>{this.state.message}</h4>
-                  {console.log(this.state.message)}
+                  <p><strong>{this.state.responseObj.name}</strong></p>
+                  <p>{this.state.message}</p>
                 </div>
               
             </InfoWindow>
@@ -106,5 +129,5 @@ export class MapContainer extends React.Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: 'YOUR GOOGLE MAP API KEY'
+  apiKey: 'YOUR GOOGLE MAPS API KEY'
 })(MapContainer);

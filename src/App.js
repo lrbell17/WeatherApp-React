@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Weather from './components/Weather.js';
+import SearchByCity from './components/SearchByCity.js';
 import MapContainer from './components/Map.js';
 //import classes from './css/map.css';
 
@@ -14,7 +14,7 @@ function App() {
       
       <main>
       <div>
-        <Weather />
+        <SearchByCity />
         </div>
         <div>
           <MapContainer />

@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from '../css/results.module.css';
 
-const Results = (props) => {
+const SearchResults = (props) => {
     return (
         <div className={classes.Wrapper}>
 
@@ -21,4 +21,4 @@ const Results = (props) => {
     )
 }
 
-export default Results;
+export default SearchResults;

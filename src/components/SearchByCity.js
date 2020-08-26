@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import Results from './Results';
+import SearchResults from './SearchResults';
 import classes from '../css/weather.module.css';
 import axios from 'axios';
 
-const Weather = () => {
+
+
+const SearchByCity = () => {
 
     let [city, setCity] = useState('');
     let [unit, setUnit] = useState('imperial');
@@ -11,7 +13,7 @@ const Weather = () => {
     let [error, setError] = useState(false);
     let [loading, setLoading] = useState(false);
 
-    const API_KEY = 'YOUR OPEN WEATHER MAP API KEY';
+    const API_KEY = 'YOUR OPENWEATHERMAP API KEY';
 
     function getWeather(e) {
         e.preventDefault();
@@ -80,7 +82,7 @@ const Weather = () => {
                 <span>  </span>
                 <button className={classes.Button} type="submit">Submit</button>
             </form>
-            <Results
+            <SearchResults
                responseObj={responseObj}
                error={error}
                loading={loading}
@@ -90,4 +92,4 @@ const Weather = () => {
     )
 }
 
-export default Weather;
+export default SearchByCity;
