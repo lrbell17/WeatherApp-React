@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import SearchResults from './SearchResults';
 import classes from '../css/weather.module.css';
+import countries from '../Countries';
 import axios from 'axios';
 
 
 
-const SearchByCity = () => {
+const SearchByZip = () => {
 
-    let [city, setCity] = useState('');
-    let [stateUS, setStateUS] = useState('');
-    let [country, setCountry] = useState('');
+    let [zip, setZip] = useState('');
+    let [country, setCountry] = useState('United States,US');
     let [unit, setUnit] = useState('imperial');
     let [responseObj, setResponseObj] = useState([]);
     let [error, setError] = useState(false);
@@ -20,28 +20,14 @@ const SearchByCity = () => {
     function getWeather(e) {
         e.preventDefault();
 
-        if (city.length === 0 || country.length === 0) {
-            return setError(true);
-        }
-        if (stateUS.length !== 0 && country !== 'us') {
-            return setError(true);
-        }
-        if (stateUS.length === 0 && country === 'us') {
-            return setError(true);
-        }
-
-
         setError(false);
         setResponseObj({});
-        
         setLoading(true);
         
-        const uriEncodedCity = encodeURIComponent(city);
-        const uriEncodedState = encodeURIComponent(stateUS);
-        const uriEncodedCountry = encodeURIComponent(country);
+        const countryCode = country.split(",")[1];
 
-        axios.get(`http://api.openweathermap.org/data/2.5/weather?units=${unit}&q=${uriEncodedCity}, ${uriEncodedState}, 
-                ${uriEncodedCountry}&appid=${API_KEY}`)
+        // call OpenWeatherMap API to get data
+        axios.get(`http://api.openweathermap.org/data/2.5/weather?units=${unit}&zip=${zip},${countryCode}&appid=${API_KEY}`)
         .then(response => response.data)
         .then(response => {
             if (response.cod !== 200) {
@@ -60,34 +46,27 @@ const SearchByCity = () => {
     }
     return (
         <div>
-            <h2>Current Weather Conditions by City</h2>
+            <h2>Current Weather Conditions by Zip Code</h2>
             <form onSubmit={getWeather}>
                 <span>
                 <input
                     type="text"
-                    placeholder="City"
+                    placeholder="Zip Code"
                     maxLength="50"
                     className={classes.textInput}
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    value={zip}
+                    onChange={(e) => setZip(e.target.value)}
                     />
-                <input
-                    type="text"
-                    placeholder="State (U.S. only)"
-                    maxLength="50"
-                    className={classes.textInput}
-                    value={stateUS}
-                    onChange={(e) => setStateUS(e.target.value)}
-                    />
-                <input
-                    type="text"
-                    placeholder="Country"
-                    maxLength="50"
-                    className={classes.textInput}
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    />
+                <select value={country} onChange={(e) => setCountry(e.target.value)} className={classes.dropdown} >
+                        {countries.map((country, index) => (
+    
+                        <option key={country} value={country} defaultValue>
+                                    {country.split(",")[0]}, {country.split(",")[1] } 
+                        </option>))
+                    }  
+                </select>
                 </span>
+
                 <label className={classes.Radio}>
                     <input
                         type="radio"
@@ -115,10 +94,11 @@ const SearchByCity = () => {
                responseObj={responseObj}
                error={error}
                loading={loading}
+               country={country}
                />
             <hr></hr>
         </div>
     )
 }
 
-export default SearchByCity;
+export default SearchByZip;

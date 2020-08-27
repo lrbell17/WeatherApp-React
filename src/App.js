@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import SearchByCity from './components/SearchByCity.js';
+import SearchByZip from './components/SearchByZip.js';
 import MapContainer from './components/Map.js';
 //import classes from './css/map.css';
 
@@ -14,7 +14,7 @@ function App() {
       
       <main>
       <div>
-        <SearchByCity />
+        <SearchByZip />
         </div>
         <div>
           <MapContainer />

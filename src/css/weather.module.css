@@ -5,12 +5,23 @@
     border-radius: 3px;
     display: block;
     margin: 5px auto;
+    width: 30%;
 }
 
 .textInput:focus {
     outline: none;
     border-color: #719ECE;
     box-shadow: 0 0 10px rgb(50, 100, 153);
+}
+
+.dropdown {
+    font-size: large;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+    border-radius: 3px;
+    display: block;
+    margin: 5px auto;
+    max-width: 30%;
 }
 
 .Radio {
